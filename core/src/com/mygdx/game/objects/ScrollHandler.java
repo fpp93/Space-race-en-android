@@ -97,4 +97,19 @@ public class ScrollHandler extends Group {
         return false ;
     }
 
+    public Background getBg() {
+        return bg;
+    }
+
+    public void setBg(Background bg) {
+        this.bg = bg;
+    }
+
+    public Background getBg_back() {
+        return bg_back;
+    }
+
+    public void setBg_back(Background bg_back) {
+        this.bg_back = bg_back;
+    }
 }

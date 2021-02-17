@@ -43,6 +43,18 @@ public class Asteroid extends Scrollable {
         // La posición será un valor aleatorio entre 0 y la altura de la aplicación menos la altura del asteroide
         position. y = new Random( ) . nextInt ( Settings. GAME_HEIGHT - ( int
                 ) height ) ;
+        this.setVidasAsteroide(3);
+    }
+    public void reset (  ) {
+
+        // Obtenemos un número aleatorio entre MIN y MAX
+        float newSize = Methods. randomFloat ( Settings. MIN_ASTEROID , Settings.
+                MAX_ASTEROID ) ;
+        // Modificaremos la altura y la anchura según el aleatorio anterior
+        width = height = 34 * newSize ;
+        // La posición será un valor aleatorio entre 0 y la altura de la aplicación menos la altura del asteroide
+        position. y = new Random( ) . nextInt ( Settings. GAME_HEIGHT - ( int
+                ) height ) ;
     }
     public float getRunTime ( ) {
         return runtime ;

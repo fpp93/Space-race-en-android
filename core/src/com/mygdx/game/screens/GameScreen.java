@@ -7,11 +7,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.mygdx.game.SpaceRace;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.helpers.InputHandler;
 import com.mygdx.game.objects.Asteroid;
@@ -22,9 +25,11 @@ import com.mygdx.game.objects.Spacecraft;
 import com.mygdx.game.utils.Settings;
 
 
+
 import java.util.ArrayList;
 
 public class GameScreen implements Screen {
+    SpaceRace game;
 
     private Stage stage;
     private Spacecraft spacecraft;
@@ -37,13 +42,15 @@ public class GameScreen implements Screen {
     private boolean gameOver = false;
     private int explosionTime = 0;
     private GlyphLayout textLayout;
+    private GlyphLayout textCont;
     private Button boton;
     private int NumMisil = 0;
     private ArrayList<Asteroid> asteroids;
+    private int conteo = 0;
 
 
-    public GameScreen(){
-
+    public GameScreen(SpaceRace game){
+        this.game=game;
 
        stage = new Stage();
        spacecraft = new Spacecraft(Settings.SPACECRAFT_STARTX,
@@ -80,11 +87,14 @@ public class GameScreen implements Screen {
         spacecraft.setName("spacecraft");
         // Iniciamos el GlyphLayout
         textLayout = new GlyphLayout();
+        textCont = new GlyphLayout();
         textLayout.setText(AssetManager.font, "GameOver");
-        AssetManager. music . play ( ) ;
+
+        AssetManager. music . play ( );
         // Asignamos como gestor de entrada la clase InputHandler
         Gdx. input .setInputProcessor ((InputProcessor) new InputHandler( this ));
    }
+
    public void lanzar_misil(){
        if(NumMisil<3) {
            misil = new Misil(Settings.MISIL_STARTX, spacecraft.getPosition().y + Settings.SPACECRAFT_HEIGHT / 2, Settings.MISIL_WIDTH, Settings.MISIL_HEIGHT, Settings.MISIL_SPEED);
@@ -130,6 +140,10 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
        stage.act(delta);
        stage.draw();
+        textCont.setText(AssetManager.font,"Meteoritos Totales : "+ conteo);
+       batch.begin();
+       AssetManager.font.draw(batch, textCont, 0 , 0);
+       batch.end();
         if (!gameOver) {
             if (scrollHandler. collides ( spacecraft ) ) {
         // Si ha habido colisión: Reproducimos la explosión
@@ -144,6 +158,7 @@ public class GameScreen implements Screen {
                     explosionTime, false ) , ( spacecraft.getPosition ( ).x + spacecraft.getWidth ( ) / 2
                     ) - 32 , spacecraft.getPosition ( ).y + spacecraft.getHeight ( ) / 2 - 32 , 64 ,
                     64 );
+            boton.setTouchable(Touchable.disabled);
             AssetManager.font.draw(batch, textLayout, Settings.GAME_WIDTH/2f - textLayout.width/2, Settings.GAME_HEIGHT/2f - textLayout.height/2);
             batch. end ( );
             explosionTime += delta ;
@@ -154,14 +169,14 @@ public class GameScreen implements Screen {
                 NumMisil = 0;
             }
         }
-        for(Asteroid asteroide : asteroids){
+        for(int i=0;i<asteroids.size();i++){
+            Asteroid asteroide = asteroids.get(i);
             if(stage.getRoot().findActor("misil")!=null) {
                 if (asteroide.collidesMisil((Misil)stage.getRoot().findActor("misil"))) {
                     stage.getRoot().findActor("misil").remove();
                     NumMisil=0;
                     if (asteroide.getVidasAsteroide() ==0) {
                         AssetManager.explosionSound.play();
-                        asteroide.remove();
                         batch.begin();
                         // Si ha habido colisión: reproducimos la explosión
 
@@ -171,9 +186,14 @@ public class GameScreen implements Screen {
                                 64);
                         batch.end();
                         explosionTime += delta;
+                        if (i == 0) {
+                            asteroide.reset(scrollHandler.getBg().getTailX());
+                        } else {
+                            asteroide.reset(scrollHandler.getBg().getTailX());
+                        }
+                        conteo++;
+
                     }
-
-
                 }
             }
         }

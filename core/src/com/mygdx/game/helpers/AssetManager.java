@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -30,6 +31,7 @@ public class AssetManager {
     public static Sound explosionSound;
     public static Music music;
     public static BitmapFont font;
+    public static BitmapFont font2;
 
     public static void load(){
         // Cargamos las texturas y se le aplica el método de escalado 'nearest'
@@ -90,6 +92,7 @@ public class AssetManager {
         FileHandle fontFile = Gdx.files.internal("fonts/space.fnt");
         font = new BitmapFont(fontFile, true);
         font.getData().setScale(0.4f);
+
     }
 
     public static void dispose(){

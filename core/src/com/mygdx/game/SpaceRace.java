@@ -20,7 +20,7 @@ public class SpaceRace extends Game {
 		//cargamos recursos
 		AssetManager.load();
 		//seteamos la pantalla
-		setScreen(new GameScreen());
+		setScreen(new GameScreen(this));
 	}
 
 	
