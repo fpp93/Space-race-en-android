@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.helpers.AssetManager;
 import com.mygdx.game.screens.GameScreen;
+import com.mygdx.game.screens.MainScreen;
 
 //clase que controla pantallas del juego y carga recursos
 public class SpaceRace extends Game {
@@ -20,7 +21,7 @@ public class SpaceRace extends Game {
 		//cargamos recursos
 		AssetManager.load();
 		//seteamos la pantalla
-		setScreen(new GameScreen(this));
+		setScreen(new MainScreen(this));
 	}
 
 	

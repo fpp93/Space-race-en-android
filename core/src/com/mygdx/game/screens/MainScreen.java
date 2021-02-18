@@ -7,9 +7,16 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.SpaceRace;
 import com.mygdx.game.helpers.AssetManager;
@@ -21,19 +28,22 @@ import com.mygdx.game.utils.Settings;
 public class MainScreen implements Screen {
     SpaceRace game;
 
-
     private Stage stage;
-    private GlyphLayout textLayout;
     private Batch batch;
-    private Spacecraft spacecraft;
-    private Background bg, bg_back;
-
+    private Image spacecraft;
+    //private Background bg, bg_back;
+    private TextureRegion background;
+    private Texture sheet;
+    Image bg;
+    Container<Label> container;
     public MainScreen(){
 
     }
     public MainScreen(SpaceRace game) {
+        sheet = new Texture( Gdx. files . internal ( "sheet.png" ) ) ;
+        sheet. setFilter ( Texture. TextureFilter . Nearest , Texture.
+                TextureFilter . Nearest ) ;
         this.game = game;
-        stage = new Stage();
         OrthographicCamera camera = new OrthographicCamera ( Settings.
                 GAME_WIDTH , Settings. GAME_HEIGHT ) ;
 
@@ -43,14 +53,30 @@ public class MainScreen implements Screen {
                 Settings. GAME_HEIGHT , camera ) ;
 
         stage = new Stage ( viewport ) ;
-        batch = stage. getBatch ( ) ;
-        spacecraft = new Spacecraft( Settings. SPACECRAFT_STARTX , Settings.
-                SPACECRAFT_STARTY , Settings. SPACECRAFT_WIDTH , Settings. SPACECRAFT_HEIGHT ) ;
-        bg = new Background(0, 0, Settings.GAME_WIDTH * 2, Settings.GAME_HEIGHT, Settings.BG_SPEED);
-        stage.addActor(spacecraft);
+        batch = stage. getBatch();
+        background = new TextureRegion ( sheet, 0 , 177 , 480 , 135 ) ;
+        background. flip ( false , true ) ;
+        bg = new Image(background);
         stage.addActor(bg);
-        textLayout = new GlyphLayout();
-        textLayout.setText(AssetManager.font, "SpaceRace");
+        Label.LabelStyle textstyle = new Label.LabelStyle ( AssetManager.font ,null ) ;
+        Label textLbl = new Label ( "SpaceRace" , textstyle ) ;
+        textLbl.setName ("LBL") ;
+        textLbl.setPosition ( Settings. GAME_WIDTH / 2 - textLbl. getWidth ( ) / 2 , Settings. GAME_HEIGHT / 2 - textLbl. getHeight ( ) / 2 ) ;
+        container = new Container<>(textLbl);
+        container.setTransform(true);
+        container.center();
+        container.setPosition(Settings. GAME_WIDTH / 2,Settings. GAME_HEIGHT / 2);
+        container.addAction ( Actions.repeat ( RepeatAction.FOREVER,Actions.
+                sequence (Actions.scaleTo(1.5f,1.5f,0.5f), Actions.scaleTo(1f,1f,0.5f) )) ) ;
+        stage.addActor(container);
+        spacecraft = new Image(AssetManager.spacecraft);
+        float y = Settings.GAME_HEIGHT / 2 + textLbl.getHeight();
+        spacecraft.addAction(Actions.repeat(RepeatAction.FOREVER, Actions.sequence(Actions.moveTo(0 - spacecraft.getWidth(), y), Actions.moveTo(Settings.GAME_WIDTH, y, 5))));
+
+        stage.addActor(spacecraft);
+
+
+        stage.addActor(spacecraft);
         AssetManager. music . play ( );
         // Asignamos como gestor de entrada la clase InputHandler
     }
@@ -63,13 +89,6 @@ public class MainScreen implements Screen {
         this.stage = stage;
     }
 
-    public Spacecraft getSpacecraft() {
-        return spacecraft;
-    }
-
-    public void setSpacecraft(Spacecraft spacecraft) {
-        this.spacecraft = spacecraft;
-    }
 
     @Override
     public void show() {
@@ -86,12 +105,10 @@ public class MainScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
-        batch.begin();
-        AssetManager.font.draw(batch, textLayout, Settings.GAME_WIDTH/2f - textLayout.width/2, Settings.GAME_HEIGHT/2f - textLayout.height/2);
-        batch. end ( );
+        stage.draw();
+
     }
 
     @Override
@@ -111,7 +128,7 @@ public class MainScreen implements Screen {
 
     @Override
     public void hide() {
-        Gdx.input.setInputProcessor(null);
+
     }
 
     @Override
