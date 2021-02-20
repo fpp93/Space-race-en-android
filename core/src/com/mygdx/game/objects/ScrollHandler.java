@@ -96,6 +96,21 @@ public class ScrollHandler extends Group {
         }
         return false ;
     }
+    public void resetAsteroides(){
+
+        Asteroid asteroid;
+        for(int i = 0; i<asteroids.size(); i++){
+            asteroid = asteroids.get(i);
+            if(i == 0){
+                asteroid.setX(Settings.GAME_WIDTH);
+                asteroid.setY(r.nextInt(Settings.GAME_HEIGHT - (int) asteroid.getHeight()));
+            }
+            else{
+                asteroid.setX(asteroids.get(i-1).getTailX() + Settings.ASTEROID_GAP);
+                asteroid.setY(r.nextInt(Settings.GAME_HEIGHT - (int) asteroid.getHeight()));
+            }
+        }
+    }
 
     public Background getBg() {
         return bg;

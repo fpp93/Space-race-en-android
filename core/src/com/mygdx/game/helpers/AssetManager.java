@@ -85,7 +85,7 @@ public class AssetManager {
         background. flip ( false , true ) ;
 
         explosionSound = Gdx. audio . newSound ( Gdx. files . internal ( "sounds/explosion.wav" ) ) ;
-        music = Gdx. audio . newMusic ( Gdx.files.internal ( "sounds/afterburner.ogg" ) ) ;
+        music = Gdx. audio . newMusic ( Gdx.files.internal ( "sounds/Afterburner.ogg" ) ) ;
         music. setVolume ( 0.2f ) ;
         music. setLooping ( true ) ;
         // Font space

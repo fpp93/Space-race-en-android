@@ -7,12 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.objects.Spacecraft;
 import com.mygdx.game.screens.GameScreen;
+import com.mygdx.game.screens.MainScreen;
 
 public class InputHandler implements InputProcessor {
 
     // Objetos necesarios
     private Spacecraft spacecraft ;
     private GameScreen screen ;
+    private MainScreen screen2 ;
     private Vector2 stageCoord;
     private Stage stage;
     // Enter para la gestión del movimiento de arrastre
@@ -24,6 +26,7 @@ public class InputHandler implements InputProcessor {
         spacecraft = screen. getSpacecraft ( ) ;
         stage = screen.getStage();
     }
+
 
 
     @Override

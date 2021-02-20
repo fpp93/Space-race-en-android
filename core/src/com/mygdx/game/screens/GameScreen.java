@@ -1,6 +1,8 @@
 package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -132,6 +134,17 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
 
+        if(gameOver==true){
+            Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keyCode) {
+                if (keyCode == Input.Keys.SPACE) {
+                    game.setScreen(new MainScreen(game));
+                }
+                return true;
+            }
+        });
+        }
     }
 
     @Override
@@ -162,6 +175,10 @@ public class GameScreen implements Screen {
             AssetManager.font.draw(batch, textLayout, Settings.GAME_WIDTH/2f - textLayout.width/2, Settings.GAME_HEIGHT/2f - textLayout.height/2);
             batch. end ( );
             explosionTime += delta ;
+            if(Gdx.input.justTouched()){
+                reseteo();
+            }
+
         }
         if(stage.getRoot().findActor("misil")!=null){
             if(misil.isLeftOfScreen()==true) {
@@ -187,9 +204,9 @@ public class GameScreen implements Screen {
                         batch.end();
                         explosionTime += delta;
                         if (i == 0) {
-                            asteroide.reset(scrollHandler.getBg().getTailX());
+                            asteroide.reset(Settings.GAME_WIDTH+Settings.ASTEROID_GAP);
                         } else {
-                            asteroide.reset(scrollHandler.getBg().getTailX());
+                            asteroide.reset(Settings.GAME_WIDTH+Settings.ASTEROID_GAP);
                         }
                         conteo++;
 
@@ -201,6 +218,16 @@ public class GameScreen implements Screen {
        //drawElements();
     }
 
+    public void reseteo(){
+        scrollHandler.resetAsteroides();
+        spacecraft.setX(Settings.SPACECRAFT_STARTX);
+        spacecraft.setY(Settings.SPACECRAFT_STARTY);
+        stage.addActor(spacecraft);
+        boton.setTouchable(Touchable.enabled);
+        explosionTime=0;
+        gameOver=false;
+        conteo=0;
+    }
     @Override
     public void resize(int width, int height) {
 
